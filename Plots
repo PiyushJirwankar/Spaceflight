@@ -1,0 +1,64 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+ISP = np.array([278, 278, 296, 446])
+gross_mass = np.array([4*43772, 245900, 37130, 12310])
+struct_mass = np.array([4*4493, 17900, 3625, 1570])
+fuel_mass = np.array([4*39879, 228000, 33505, 10740])
+m_payload = 4725
+m_leo = 10200
+time_0 = np.linspace(0,142,142)
+m_0 = np.zeros(142)
+time_1 = np.linspace(0, 205, 205)
+m_1 = np.zeros(205)
+time_2 = np.linspace(0, 125, 125)
+m_2 = np.zeros(125)
+time_3 = np.linspace(0, 259, 259)
+m_3 = np.zeros(259)
+
+pitch_kick = 2*np.pi/180
+def plot_burnprof_stage0():
+    for i in range(len(time_0)):
+        if i<57:
+            m_0[i] = (gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_payload+m_leo)-fuel_mass[0]*i/128
+        else:
+            theta = 2*np.arctan(np.tan(pitch_kick/2)*np.exp(9.81*i/384))
+            m_0[i] =70000+ m_0[56]*np.power((np.sin(theta)/np.sin(pitch_kick)), -384/(9.81*ISP[0]))
+    plt.figure()
+    plt.plot(time_0, m_0)
+    plt.xlabel('Time')
+    plt.ylabel('Burn Profile Stage 0')
+    
+plot_burnprof_stage0()
+
+def plot_burnprof_stage1():
+    for i in range(len(m_1)):
+        a = 3.4#*np.pi/180
+        theta = 2*np.arctan(np.tan(a/2)*np.exp(9.81*i/384))
+        m_1[i] = m_0[-1]* np.power((np.sin(theta)/np.sin(4.4)), -384/(9.81*ISP[1]))
+    
+    plt.figure()
+    plt.plot(time_1, m_1)
+    plt.xlabel('time')
+    plt.ylabel('Burn Profile for Stage 1')
+
+def plot_burnprof_stage2():
+    for i in range(len(m_2)):
+        theta = 21.14*np.pi/180 +  0.0092*i
+        m_2[i] =  163961.36*np.exp((2/(0.0092*ISP[2])*(-np.sin(theta)+np.sin(21.14))))
+    plt.figure()
+    plt.plot(time_2, m_2)
+    plt.xlabel('time')
+    plt.ylabel('Burn profile for Stage 2')
+
+
+def plot_burnprof_stage3():
+    for i in range(len(m_3)):
+        theta = 54.5*np.pi/180 +  0.0024*i
+        m_3[i] = 100*15078.233*np.exp((2/(0.0024*ISP[2])*(-np.sin(theta)+np.sin(54.5))))
+    plt.figure()
+    plt.plot(time_3, m_3)
+    plt.xlabel('Time')
+    plt.ylabel('Burn Profile for Stage 3')
+plot_burnprof_stage2()        
+plot_burnprof_stage3()
