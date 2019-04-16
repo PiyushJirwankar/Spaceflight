@@ -33,19 +33,20 @@ plot_burnprof_stage0()
 
 def plot_burnprof_stage1():
     for i in range(len(m_1)):
-        a = 3.4#*np.pi/180
+        a = 0.7*np.pi/180
         theta = 2*np.arctan(np.tan(a/2)*np.exp(9.81*i/384))
-        m_1[i] = m_0[-1]* np.power((np.sin(theta)/np.sin(4.4)), -384/(9.81*ISP[1]))
+        m_1[i] =m_0[-1]*np.power((np.sin(theta)/np.sin(a)), -384/(9.81*ISP[1]))
     
     plt.figure()
     plt.plot(time_1, m_1)
     plt.xlabel('time')
     plt.ylabel('Burn Profile for Stage 1')
 
+plot_burnprof_stage1()
 def plot_burnprof_stage2():
     for i in range(len(m_2)):
         theta = 21.14*np.pi/180 +  0.0092*i
-        m_2[i] =  163961.36*np.exp((2/(0.0092*ISP[2])*(-np.sin(theta)+np.sin(21.14))))
+        m_2[i] = 0.8* 163961.36*np.exp((2/(0.0092*ISP[2])*(-np.sin(theta)+np.sin(21.14))))
     plt.figure()
     plt.plot(time_2, m_2)
     plt.xlabel('time')
@@ -58,6 +59,7 @@ def plot_burnprof_stage3():
         m_3[i] = 100*15078.233*np.exp((2/(0.0024*ISP[2])*(-np.sin(theta)+np.sin(54.5))))
     plt.figure()
     plt.plot(time_3, m_3)
+    plt.ylim(7000, 11000)
     plt.xlabel('Time')
     plt.ylabel('Burn Profile for Stage 3')
 plot_burnprof_stage2()        
