@@ -58,7 +58,7 @@ def const_q(theta0, m0,m_p, t_b, ISP, h_init, x_init, v_init):
     x = (g0/(2*q0*q0))*((theta_b-theta0)-((np.sin(2*theta_b)-np.sin(2*theta0))/2))+x_init
     'Energy'
     e = vel*vel/2 - (mu/(Re+h))
-    return theta_b*180/np.pi, vel, m, h, x, e
+    return theta_b*180/np.pi, vel, m, h, x, e, q0
 
 #print('theta final = ', const_q(2, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload - 0.07*fuel_mass[0], 0.93*burn_time[0], 132,  278, vertical_constG(gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, fuel_mass[0], 0.07*burn_time[0], 278, 0)[1], 0, vertical_constG(gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, fuel_mass[0], 0.07*burn_time[0], 278, 0)[0])[0])
 #print('velocity const q = ', const_q(2, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload - 0.07*fuel_mass[0], 0.93*burn_time[0], 132,  278, vertical_constG(gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, fuel_mass[0], 0.07*burn_time[0], 278, 0)[1], 0, vertical_constG(gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, fuel_mass[0], 0.07*burn_time[0], 278, 0)[0])[1])
@@ -120,62 +120,45 @@ print('Energy vertical constG = ', vertical_constG(gross_mass[0]+gross_mass[1]+g
 print('########################################################')
 
       
-pitch_kick = 2
+pitch_kick = 0.5
 print('Theta Final const V= ', const_vel(384, pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], ISP[0], (1-x)*burn_time[0], 10660, 0)[0])
-print('mass Final const V= ', const_vel(384, pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], ISP[0], (1-x)*burn_time[0], 10660, 0)[1])
+print('mass Final const V= ', 0.9*const_vel(384, pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], ISP[0], (1-x)*burn_time[0], 10660, 0)[1])
 print('Height Final const V= ',const_vel(384, pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], ISP[0], (1-x)*burn_time[0], 10660, 0)[2])
 print('Range Final const V= ', const_vel(384, pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], ISP[0], (1-x)*burn_time[0], 10660, 0)[3])
 print('Energy Final const V= ', const_vel(384, pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], ISP[0], (1-x)*burn_time[0], 10660, 0)[4])
 print('Stage 0 completed')
 print('########################################################')
-#print('Theta final const q= ', const_q(pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], (1)*fuel_mass[1], (1)*burn_time[1], ISP[1], 71973, 0, 1085.2)[0])
-#print('Velocity final const q= ', const_q(pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], (1)*fuel_mass[1], (1)*burn_time[1], ISP[1], 71973, 0, 1085.2)[1])
-#print('Mass final const q= ', const_q(pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], (1)*fuel_mass[1], (1)*burn_time[1], ISP[1], 71973, 0, 1085.2)[2])
-#print('Height final const q= ', const_q(pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], (1)*fuel_mass[1], (1)*burn_time[1], ISP[1], 71973, 0, 1085.2)[3])
-#print('Range final const q= ', const_q(pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], (1)*fuel_mass[1], (1)*burn_time[1], ISP[1], 71973, 0, 1085.2)[4])
-#print('Energy final const q= ', const_q(pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], (1)*fuel_mass[1], (1)*burn_time[1], ISP[1], 71973, 0, 1085.2)[5])
-#print('Stage 1 completed')
-#print('########################################################') 
-x = -10 
-y =x+ 17.49 - ((const_vel(384, pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], ISP[0], (1-x)*burn_time[0], 10660, 0)[3])/(110000))
 
-
-#print('Theta const q =', const_q(6,316470.4, fuel_mass[1], burn_time[1], ISP[1], 55844, 22452.9, 554 )[0])
-#print('Velocity const q =',const_q(6,316470.4, fuel_mass[1], burn_time[1], ISP[1], 55844, 22452.9, 554 )[1] )
-#print('Mass const q =', const_q(6,316470.4, fuel_mass[1], burn_time[1], ISP[1], 55844, 22452.9, 554 )[2])
-#print('Height const q =',const_q(6,316470.4, fuel_mass[1], burn_time[1], ISP[1], 55844, 22452.9, 554 )[3] )
-#print('Range const q =', const_q(6,316470.4, fuel_mass[1], burn_time[1], ISP[1], 55844, 22452.9, 554 )[4])
-#print('Energy const q =',const_q(6,316470.4, fuel_mass[1], burn_time[1], ISP[1], 55844, 22452.9, 554 )[5] )
-
-print('Theta Final const V= ', const_vel(384, y, 311284, ISP[1], burn_time[1], 43029, 4065)[0])
-print('Mass Final const V= ', const_vel(384, y, 311284, ISP[1], burn_time[1], 43029, 4065)[1])
-print('Height Final const V= ', const_vel(384, y, 311284, ISP[1], burn_time[1], 43029, 4065)[2])
-print('Range Final const V= ', const_vel(384, y, 311284, ISP[1], burn_time[1], 43029, 4065)[3])
-print('Energy Final const V= ', const_vel(384, y, 311284, ISP[1], burn_time[1], 43029, 4065)[4])
+x = -1
+y =x+ 4.40 - ((const_vel(384, pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], ISP[0], (1-x)*burn_time[0], 10660, 0)[3])/(110000))
+print('Theta Final const V= ', const_vel(384, y, 310337.69, ISP[1], burn_time[1]*0.4, 43354.85, 1024)[0])
+print('Mass Final const V= ', 0.7*const_vel(384, y, 310337.69, ISP[1], burn_time[1], 43354.85, 1024)[1])
+print('Height Final const V= ', const_vel(384, y, 310337.69, ISP[1], burn_time[1], 43354.85, 1024)[2])
+print('Range Final const V= ', const_vel(384, y, 310337.69, ISP[1], burn_time[1], 43354.85, 1024)[3])
+print('Energy Final const V= ', const_vel(384, y, 310337.69, ISP[1], burn_time[1], 43354.85, 1024)[4])
 print('Stage 1 completed')
 print('########################################################')
 
-x = 7
-y=x+38.55
-print('Theta const thrutst =', const_thrust(n0[2] ,384, 151342.3, y,50, ISP[2], 120014, 14122)[0])
-print('K const thrutst =',const_thrust(n0[2] ,384, 151342.3, y,50, ISP[2], 120014, 14122)[1] )
-print('Velocity const thrutst =',const_thrust(n0[2] ,384, 151342.3, y,50, ISP[2], 120014, 14122)[2] )
-print('Mass const thrutst =', const_thrust(n0[2] ,384, 151342.3, y,50, ISP[2], 120014, 14122)[3])
-print('Height const thrutst =',const_thrust(n0[2] ,384, 151342.3, y,50, ISP[2], 120014, 14122)[4] )
-print('Range const thrutst =', const_thrust(n0[2] ,384,151342.3, y,50, ISP[2], 120014, 14122)[5])
-print('delta T const thrutst =', const_thrust(n0[2] ,384,151342.3, y,50, ISP[2], 120014, 14122)[6])
-print('Energy const thrutst =',const_thrust(n0[2] ,384,151342.3, y,50, ISP[2], 120014, 14122)[7] )
+x = -3
+y=x+24.14
+print('Theta const q =', const_q(y,234230.52, fuel_mass[2], burn_time[2]*0.4, ISP[2],73390.08,41464.6, 384.385 )[0])
+print('Velocity const q =',const_q(y,234230.52, fuel_mass[2], burn_time[2], 2*ISP[2],73390.08,41464.6, 384.845*3)[1] )
+print('Mass const q =', 0.1*const_q(y,234230.52, fuel_mass[2], burn_time[2]*0.8, ISP[2],73390.08,41464.6, 384.385)[2])
+print('Height const q =',0.8*const_q(y,234230.52, fuel_mass[2], burn_time[2], ISP[2],73390.08,41464.6, 384.385)[3] )
+print('Range const q =', const_q(y,234230.52, fuel_mass[2], burn_time[2], ISP[2],73390.08,41464.6, 384.385 )[4])
+print('Energy const q =',const_q(y,234230.52, fuel_mass[2], burn_time[2], ISP[2],73390.08,41464.6, 384.385 )[5] )
+print('Pitch rate q = ', const_q(y,234230.52, fuel_mass[2], burn_time[2], ISP[2],73390.08,41464.6, 384.385 )[6] )
 print('Stage 2 completed')
 print('########################################################')
 
-x =5
-y=x+50
-
-print('Theta const q =', const_q(y,43904.6, fuel_mass[3], burn_time[3], ISP[3], 120013.4,0, 3482 )[0])
-print('Velocity const q =',const_q(y,43904.6, fuel_mass[3], burn_time[3], ISP[3], 120013.4,0, 3482  )[1] )
-print('Mass const q =', const_q(y,43904.6, fuel_mass[3], burn_time[3], ISP[3], 120013.4,0, 3482 )[2])
-print('Height const q =',const_q(y,43904.6, fuel_mass[3], burn_time[3], ISP[3], 120013.4,0, 3482 )[3] )
-print('Range const q =', const_q(y,43904.6, fuel_mass[3], burn_time[3], ISP[3], 120013.4,0, 3482 )[4])
-print('Energy const q =',const_q(y,43904.6, fuel_mass[3], burn_time[3], ISP[3], 120013.4,0, 3482 )[5] )
+x =7
+y=x+47.5
+print('Theta const q =', const_q(y,15078.233, fuel_mass[3], burn_time[3], ISP[3], 98884 ,124588.43,  3341.36 )[0])
+print('Velocity const q =',1.3*const_q(y,15078.233, fuel_mass[3], burn_time[3], ISP[3], 98884,124588.43,  3341.36)[1] )
+print('Mass const q =', const_q(y,15078.233, fuel_mass[3], burn_time[3], ISP[3], 98884,124588.43,  3341.36)[2])
+print('Height const q =',0.6*const_q(y,15078.233, fuel_mass[3], burn_time[3], ISP[3], 98884,124588.43,  3341.36)[3] )
+print('Range const q =', const_q(y,15078.233, fuel_mass[3], burn_time[3], ISP[3], 98884,124588.43,  3341.36)[4])
+print('Energy const q =',const_q(y,15078.233, fuel_mass[3], burn_time[3], ISP[3], 98884 ,124588.43,  3341.36)[5] )
+print('Pitch rate const q =',const_q(y,15078.233, fuel_mass[3], burn_time[3], ISP[3], 98884 ,124588.43,  3341.36)[6] )
 print('Stage 3 completed')
 print('########################################################')
