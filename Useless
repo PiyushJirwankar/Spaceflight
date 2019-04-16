@@ -1,0 +1,23 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+ISP = np.array([278, 278, 296, 446])
+gross_mass = np.array([4*43772, 245900, 37130, 12310])
+struct_mass = np.array([4*4493, 17900, 3625, 1570])
+fuel_mass = np.array([4*39879, 228000, 33505, 10740])
+m_payload = 4725
+m_leo = 10200
+time_0 = np.linspace(0,142,142)
+m_0 = np.zeros(142)
+time_1 = np.linspace(0, 205, 205)
+m_1 = np.zeros(205)
+time_2 = np.linspace(0, 125, 125)
+m_2 = np.zeros(125)
+time_3 = np.linspace(0, 759, 759)
+m_3 = np.zeros(259)
+
+for i in range(len(time_0)):
+    if i<57:
+        m_0[i] = (gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_payload+m_leo)-fuel_mass[0]*i/128
+    else:
+        m_0[i] = m0*np.power((np.sin(theta_final)/np.sin(theta0)),(-v0/(g0*ISP)))
