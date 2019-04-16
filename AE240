@@ -1,0 +1,164 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+g0=9.5 #m/s2
+mu = 3.986e14
+Re = 6378000
+
+burn_time = np.array([142, 205, 125, 759])
+ISP = np.array([278, 278, 296, 446])
+gross_mass = np.array([4*43772, 245900, 37130, 12310])
+struct_mass = np.array([4*4493, 17900, 3625, 1570])
+fuel_mass = np.array([4*39879, 228000, 33505, 10740])
+height = np.empty([4])
+m_leo = 10200
+m_payload = 4725
+
+
+##################################################################################################################################################################################################################################################################################################################################################################################################
+"vertical ascent const gravity"
+def vertical_constG(m_0, m_p, t_b, ISP, h_init):
+    'velocity after burnout'
+    v_i = g0*ISP*np.log((m_0)/(m_0-m_p))
+    v_g = 0#-g0*t_b
+    v = v_i+v_g
+    'height after burnout'
+    beta = (m_p)/(t_b)
+    h_0 = m_0*g0*ISP/beta
+    lambd = (m_p)/m_0
+    h_1 = (((1-lambd)*np.log(1-lambd))+lambd)
+    h_2 =0# 0.5*g0*t_b*t_b
+    h= h_0*h_1-h_2 + h_init
+    'energy after burnout'
+    e = v*v/2 - mu/(Re + h)
+    return v, h, e
+
+#print(vertical_constG(80000, 60000, 100, 240, 0))
+##################################################################################################################################################################################################################################################################################################################################################################################################
+'Constant pitch rate'
+def const_q(theta0, m0,m_p, t_b, ISP, h_init, x_init, v_init):
+    theta0=theta0*np.pi/180
+    q0=g0*np.sin(theta0)/v_init
+    'Final theta after this manuever'
+    theta_b = q0*t_b + theta0
+    
+    'velocity at the end of const pitch rate manuever'
+    vel = g0*np.sin(theta_b)/q0 + v_init
+    
+    'Mass after '
+    exp = 2*(np.sin(theta0)-np.sin(theta_b))/(q0*ISP)
+    m = m0*np.exp(exp)
+
+    'height after const pitch rate manuever'
+    h = (g0/(4*q0*q0))*(np.cos(2*theta0)-np.cos(2*theta_b)) + h_init
+    
+    'Range on ground wrt time'
+    x = (g0/(2*q0*q0))*((theta_b-theta0)-((np.sin(2*theta_b)-np.sin(2*theta0))/2))+x_init
+    'Energy'
+    e = vel*vel/2 - (mu/(Re+h))
+    return theta_b*180/np.pi, vel, m, h, x, e
+
+#print('theta final = ', const_q(2, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload - 0.07*fuel_mass[0], 0.93*burn_time[0], 132,  278, vertical_constG(gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, fuel_mass[0], 0.07*burn_time[0], 278, 0)[1], 0, vertical_constG(gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, fuel_mass[0], 0.07*burn_time[0], 278, 0)[0])[0])
+#print('velocity const q = ', const_q(2, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload - 0.07*fuel_mass[0], 0.93*burn_time[0], 132,  278, vertical_constG(gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, fuel_mass[0], 0.07*burn_time[0], 278, 0)[1], 0, vertical_constG(gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, fuel_mass[0], 0.07*burn_time[0], 278, 0)[0])[1])
+#print('height const q = ', const_q(2, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload - 0.07*fuel_mass[0], 0.93*burn_time[0], 132,  278, vertical_constG(gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, fuel_mass[0], 0.07*burn_time[0], 278, 0)[1], 0, vertical_constG(gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, fuel_mass[0], 0.07*burn_time[0], 278, 0)[0])[2])
+#print('Mass const q = ', const_q(2, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload - 0.07*fuel_mass[0], 0.93*burn_time[0], 132,  278, vertical_constG(gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, fuel_mass[0], 0.07*burn_time[0], 278, 0)[1], 0, vertical_constG(gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, fuel_mass[0], 0.07*burn_time[0], 278, 0)[0])[3])
+#print('Range const q = ', const_q(2, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload - 0.07*fuel_mass[0], 0.93*burn_time[0], 132,  278, vertical_constG(gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, fuel_mass[0], 0.07*burn_time[0], 278, 0)[1], 0, vertical_constG(gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, fuel_mass[0], 0.07*burn_time[0], 278, 0)[0])[4])
+
+
+#print(const_q(5*np.pi/180, 74000, 54000, 90, 240, 415, 0,85.4))
+##################################################################################################################################################################################################################################################################################################################################################################################################
+'Constant velocity'
+def const_vel(v0, theta0, m0, ISP, delT, h_init, x_init):
+    theta0 = theta0*np.pi/180
+    'Final theta'
+    theta_final = 2*np.arctan((np.tan(theta0/2))*np.exp(g0*delT/v0))
+    'Final mass'
+    m = m0*np.power((np.sin(theta_final)/np.sin(theta0)),(-v0/(g0*ISP)))
+    'Final height'
+    h_final = h_init + ((v0*v0)/g0)*np.log((np.sin(theta_final))/np.sin(theta0))
+    'Final range'
+    x_final = x_init + v0*v0*(theta_final-theta0)/g0  
+    'Energy'
+    e = v0*v0/2 - mu/(Re + h_final)
+    return theta_final*180/np.pi, m, h_final, x_final, e
+
+##################################################################################################################################################################################################################################################################################################################################################################################################
+'Constant Specific Thrust'
+def const_thrust(n0, v0, m0, theta0, theta_b, ISP, t_init):
+    theta0 = theta0*np.pi/180
+    theta_b = theta_b*np.pi/180
+    k = v0/(np.power(np.tan(theta0/2), n0-1) + np.power(np.tan(theta0/2), n0+1))
+    'Final velocity'
+    v_final = k * (np.power(np.tan(theta_b/2), n0-1) + np.power(np.tan(theta_b/2), n0+1))
+    'time final'
+    time_final = t_init + (k/g0)*(((np.power(np.tan(theta_b/2), (n0-1)))/(n0-1)) + ((np.power(np.tan(theta_b/2), (n0+1)))/(n0+1))) - (((np.power(np.tan(theta0/2), (n0-1)))/(n0-1)) + ((np.power(np.tan(theta0/2), (n0+1)))/(n0+1)))
+    delT = time_final - t_init
+    'mass solution'
+    m = m0 * np.exp(-n0*delT/ISP)
+    'Energy'
+#    e = v_final*v_final/2 - mu/()
+    return k , v_final, time_final, m
+
+
+x = 1.0
+print('Velocity vertical constG = ', vertical_constG(gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, x*fuel_mass[0], x*burn_time[0], 278, 0)[0])
+print('Height vertical constG = ', vertical_constG(gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, x*fuel_mass[0], x*burn_time[0], 278, 0)[1])
+print('Energy vertical constG = ', vertical_constG(gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, x*fuel_mass[0], x*burn_time[0], 278, 0)[2])
+print('Stage 0 completed')
+print('########################################################')
+
+y=0.5
+print('Velocity vertical constG 10 sec = ', vertical_constG(gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, y*fuel_mass[1], y*burn_time[1], ISP[1], 71973)[0])
+print('Height vertical constG 10 sec = ', vertical_constG(gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, y*fuel_mass[1], y*burn_time[1], ISP[1], 71973)[1])
+print('Energy vertical constG 10 sec = ', vertical_constG(gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, y*fuel_mass[1], y*burn_time[1], ISP[1], 71973)[2])
+print('Stage 1 partly completed')
+print('########################################################')
+      
+pitch_kick = 0.02
+print('Theta Final const V= ', const_vel(1209, pitch_kick, gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-y*fuel_mass[1], ISP[1], (1-y)*burn_time[1], 140000, 0)[0])
+print('mass Final const V= ', const_vel(1209, pitch_kick, gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-y*fuel_mass[1], ISP[1], (1-y)*burn_time[1], 140000, 0)[1])
+print('Height Final const V= ',const_vel(1209, pitch_kick, gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-y*fuel_mass[1], ISP[1], (1-y)*burn_time[1], 140000, 0)[2])
+print('Range Final const V= ', const_vel(1209, pitch_kick, gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-y*fuel_mass[1], ISP[1], (1-y)*burn_time[1], 140000, 0)[3])
+print('Energy Final const V= ', const_vel(1209, pitch_kick, gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-y*fuel_mass[1], ISP[1], (1-y)*burn_time[1], 140000, 0)[4])
+print('Stage 1 completed')
+print('########################################################')
+#print('Theta final const q= ', const_q(pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], (1)*fuel_mass[1], (1)*burn_time[1], ISP[1], 71973, 0, 1085.2)[0])
+#print('Velocity final const q= ', const_q(pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], (1)*fuel_mass[1], (1)*burn_time[1], ISP[1], 71973, 0, 1085.2)[1])
+#print('Mass final const q= ', const_q(pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], (1)*fuel_mass[1], (1)*burn_time[1], ISP[1], 71973, 0, 1085.2)[2])
+#print('Height final const q= ', const_q(pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], (1)*fuel_mass[1], (1)*burn_time[1], ISP[1], 71973, 0, 1085.2)[3])
+#print('Range final const q= ', const_q(pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], (1)*fuel_mass[1], (1)*burn_time[1], ISP[1], 71973, 0, 1085.2)[4])
+#print('Energy final const q= ', const_q(pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], (1)*fuel_mass[1], (1)*burn_time[1], ISP[1], 71973, 0, 1085.2)[5])
+#print('Stage 1 completed')
+#print('########################################################') 
+
+x = 0.01
+y=x+0.05
+print('Theta Final const V= ', const_vel(1209,x, 135742, ISP[2], burn_time[2], 270000, 67)[0])
+print('mass Final const V= ', const_vel(1209,x, 135742, ISP[2], burn_time[2], 270000, 67)[1])
+print('Height Final const V= ', const_vel(1209,x, 135742, ISP[2], burn_time[2], 270000, 67)[2])
+print('Range Final const V= ', const_vel(1209,x, 135742, ISP[2], burn_time[2], 270000, 67)[3])
+print('Energy Final const V= ', const_vel(1209,x, 135742, ISP[2], burn_time[2], 270000, 67)[4])
+print('Stage 2 completed')
+print('########################################################')
+
+y = 0.5
+z = y + 3.04
+print('Theta Final const V= ', const_vel(1483, z, 95794, ISP[2], burn_time[2], 390887, 703)[0])
+print('mass Final const V= ', const_vel(1483, z, 95794, ISP[2], burn_time[2], 390887, 703)[1])
+print('Height Final const V= ', const_vel(1483, z, 95794, ISP[2], burn_time[2], 390887, 703)[2])
+print('Range Final const V= ', const_vel(1483, z, 95794, ISP[2], burn_time[2], 390887, 703)[3])
+print('Energy Final const V= ', const_vel(1483, z, 95794, ISP[2], burn_time[2], 390887, 703)[4])
+print('Stage 2 completed')
+print('########################################################')      
+      
+pitch_kick_1 = -3
+a = pitch_kick_1 + 41.43
+print('Theta final const q= ', const_q(a, 100762.1, fuel_mass[3], burn_time[3], ISP[3], 209706.8, 17484.86, 489.08)[0])
+print('Velocity final const q= ', const_q(a, 100762.1, fuel_mass[3], burn_time[3], ISP[3], 209706.8, 17484.86, 489.08)[1])
+print('Mass final const q= ', const_q(a, 100762.1, fuel_mass[3], burn_time[3], ISP[3], 209706.8, 17484.86, 489.08)[2])
+print('Height final const q= ', const_q(a, 100762.1, fuel_mass[3], burn_time[3], ISP[3], 209706.8, 17484.86, 489.08)[3])
+print('Range final const q= ', const_q(a, 100762.1, fuel_mass[3], burn_time[3], ISP[3], 209706.8, 17484.86, 489.08)[4])
+print('Energy final const q= ', const_q(a, 100762.1, fuel_mass[3], burn_time[3], ISP[3], 209706.8, 17484.86, 489.08)[5])
+print('Stage 3 completed')
+print('########################################################') 
+      
