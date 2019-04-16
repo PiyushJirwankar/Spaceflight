@@ -136,9 +136,9 @@ print('########################################################')
 #print('Energy final const q= ', const_q(pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], (1)*fuel_mass[1], (1)*burn_time[1], ISP[1], 71973, 0, 1085.2)[5])
 #print('Stage 1 completed')
 #print('########################################################') 
+x = -10 
+y =x+ 17.49 - ((const_vel(384, pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], ISP[0], (1-x)*burn_time[0], 10660, 0)[3])/(110000))
 
-x = 0.2 -((const_vel(384, pitch_kick, gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload-x*fuel_mass[0], ISP[0], (1-x)*burn_time[0], 10660, 0)[3])/(110000))
-y=x+0.05 
 
 #print('Theta const q =', const_q(6,316470.4, fuel_mass[1], burn_time[1], ISP[1], 55844, 22452.9, 554 )[0])
 #print('Velocity const q =',const_q(6,316470.4, fuel_mass[1], burn_time[1], ISP[1], 55844, 22452.9, 554 )[1] )
@@ -179,25 +179,3 @@ print('Range const q =', const_q(y,43904.6, fuel_mass[3], burn_time[3], ISP[3], 
 print('Energy const q =',const_q(y,43904.6, fuel_mass[3], burn_time[3], ISP[3], 120013.4,0, 3482 )[5] )
 print('Stage 3 completed')
 print('########################################################')
-      
-      
-time_0 = np.linspace(0,142,142)
-m_0 = np.zeros(142)
-time_1 = np.linspace(0, 205, 205)
-m_1 = np.zeros(205)
-time_2 = np.linspace(0, 125, 125)
-m_2 = np.zeros(125)
-time_3 = np.linspace(0, 759, 759)
-m_3 = np.zeros(759)
-
-theta_final = 2*np.arctan((np.tan(pitch_kick/2))*np.exp(g0*(1-x)*burn_time[0]/vertical_constG(gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, x*fuel_mass[0], x*burn_time[0], ISP[0], 0)[0]))
-theta0 = pitch_kick
-v0 =  vertical_constG(gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, x*fuel_mass[0], x*burn_time[0], ISP[0], 0)[0]
-for i in range(len(m_0)):
-    if i<57:
-        m_0[i] = gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_payload+m_leo - i*fuel_mass[0]/142
-    else:
-        theta = 2*np.arctan((np.tan(pitch_kick/2))*np.exp(g0*(57-i)/vertical_constG(gross_mass[0]+gross_mass[1]+gross_mass[2]+gross_mass[3]+m_leo+m_payload, x*fuel_mass[0], x*burn_time[0], ISP[0], 0)[0]))
-        m_0[i] = m_0[56] * np.power((np.sin(theta)/np.sin(theta0)),(-v0/(g0*ISP[0])))
-        
-plt.plot(time_0,m_0)
